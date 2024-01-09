@@ -1,1 +1,4 @@
-office
+
+{% for owner in object_list %}
+<p>{{ owner.first_name }} {{ owner.last_name }} </p>
+{% endfor %}

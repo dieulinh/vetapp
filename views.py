@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from .models import Owner, Patient
+from .forms import OwnerForm
+from django.http import JsonResponse
 from django.views.generic import ListView, CreateView,UpdateView,DeleteView
 class OwnerList(ListView):
   model = Owner
@@ -36,3 +38,20 @@ class OwnerDelete(DeleteView):
 class PatientDelete(DeleteView):
   model = Patient
   template_name = "vetoffice/patient_delete_form.html"
+
+def form_view(request):
+  form = OwnerForm()
+  if request.method == 'POST':
+    form = OwnerForm(request.POST)
+    if form.is_valid():
+      cd = form.cleaned_data
+      owner = Owner(
+        first_name = cd['first_name'],
+        last_name=cd['last_name'],
+        phone=cd['phone']
+      )
+      owner.save()
+      return JsonResponse({
+        'message': 'success'
+      })
+  return render(request,'vetoffice/owner_form.html', {'form': form})
